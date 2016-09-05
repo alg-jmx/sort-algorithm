@@ -1,0 +1,181 @@
+---
+title: "sort_algorithm"
+author: "jmx"
+date: "2016年9月5日"
+output: html_document
+---
+```{r}
+vector = rnorm(5000)
+```
+
+```{r}
+# bubble sort
+bubbleSort = function(vector) {
+  n = length(vector)
+  for (i in 1:(n-1)) {
+    for (j in (i+1):n) {
+      if(vector[i]>=vector[j]){
+        temp = vector[i]
+        vector[i] = vector[j]
+        vector[j] = temp
+        }
+      }
+    }
+  return(vector)
+}
+```
+
+```{r}
+# quick sort
+quickSort = function(vector, small, big) {
+  left = small
+  right = big
+  if (left >= right) {
+    return(vector)
+  }else{
+    markValue = vector[left]
+    while (left < right) {
+      while (left < right && vector[right] >= markValue) {
+        right = right - 1
+      }
+      vector[left] = vector[right]
+      while (left < right && vector[left] <= markValue) {
+        left = left + 1
+      }
+      vector[right] = vector[left]
+    }
+  vector[left] = markValue
+  vector = quickSort(vector, small, left - 1)
+  vector = quickSort(vector, right + 1, big)
+  return(vector)
+  }
+}
+```
+
+```{r}
+# insert sort
+insertSort = function(vector){
+  n = length(vector)
+  for(i in 2:n){
+    markValue = vector[i]
+    j = i-1
+    while (j>0) {
+      if(vector[j]>markValue){
+        vector[j+1] = vector[j]
+        vector[j] = markValue
+      }
+      j = j - 1
+    }
+  }
+  return(vector)
+}
+```
+
+```{r}
+# shell sort
+shellSort = function(vector){
+  n = length(vector)
+  separate = floor(n/2)
+  while (separate>0) {
+    for(i in 1:separate){
+      j = i + separate
+      while (j<=n) {
+        m = j - separate
+        markValue = vector[j]
+        while(m>0){
+          if(vector[m]>markValue){
+            vector[m+separate] = vector[m]
+            vector[m] = markValue
+          }
+          m = m -separate
+        }
+        j = j + separate
+      }
+    }
+    separate = floor(separate/2)
+  }
+  return(vector)
+}
+```
+
+```{r}
+# select sort
+selectSort = function(vector){
+  n = length(vector)
+  for(i in 1:(n-1)){
+    minIndex = i
+    for(j in (i+1):n){
+      if(vector[minIndex]>vector[j]){
+        minIndex = j
+      }
+    }
+    temp = vector[i]
+    vector[i] = vector[minIndex]
+    vector[minIndex] = temp
+  }
+  return(vector)
+}
+```
+
+```{r}
+# heap sort
+adjustHeap = function(vector,k,n){
+  left = 2*k
+  right = 2*k+1
+  min = k
+  if(k<floor(n/2)){
+    if(left<=n&&vector[left]<vector[min]){
+      min = left
+    }
+    if(right<=n&&vector[right]<vector[min]){
+      min = right
+    }
+    if(min!=k){
+      temp = vector[k]
+      vector[k] = vector[min]
+      vector[min] = temp
+      vector = adjustHeap(vector,min,n)
+    }
+  }
+  return(vector)
+}
+
+createHeap = function(vector,n){
+  for(i in 1:floor(n/2)){
+    vector = adjustHeap(vector,i,n)
+  }
+  return(vector)
+}
+
+heapSort = function(vector){
+  n = length(vector)
+  vector = createHeap(vector,n)
+  for(i in 1:n){
+    temp = vector[n]
+    vector[n] = vector[i]
+    vector[i] = temp
+    vector = adjustHeap(vector,n,i)
+  }
+  return(vector)
+}
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
