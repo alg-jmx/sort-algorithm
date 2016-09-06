@@ -1,6 +1,6 @@
 ---
 title: "sort_algorithm"
-author: "jmx"
+author: "JuMingXing"
 date: "2016年9月5日"
 output: html_document
 ---
@@ -24,7 +24,9 @@ bubbleSort = function(vector) {
   return(vector)
 }
 ```
+用户   系统   流逝 
 
+12.532  0.000 12.442
 ```{r}
 # quick sort
 quickSort = function(vector, small, big) {
@@ -51,7 +53,9 @@ quickSort = function(vector, small, big) {
   }
 }
 ```
+用户  系统  流逝 
 
+0.156 0.000 0.089
 ```{r}
 # insert sort
 insertSort = function(vector){
@@ -70,7 +74,9 @@ insertSort = function(vector){
   return(vector)
 }
 ```
+用户   系统   流逝 
 
+13.452  0.000 13.360 
 ```{r}
 # shell sort
 shellSort = function(vector){
@@ -97,7 +103,9 @@ shellSort = function(vector){
   return(vector)
 }
 ```
+用户   系统   流逝 
 
+10.824  0.000 10.665
 ```{r}
 # select sort
 selectSort = function(vector){
@@ -116,32 +124,34 @@ selectSort = function(vector){
   return(vector)
 }
 ```
+用户  系统  流逝 
 
+4.392 0.000 4.248 
 ```{r}
 # heap sort
 adjustHeap = function(vector,k,n){
   left = 2*k
   right = 2*k+1
-  min = k
-  if(k<floor(n/2)){
-    if(left<=n&&vector[left]<vector[min]){
-      min = left
+  max = k
+  if(k<=n/2){
+    if(left<=n&&vector[left]>=vector[max]){
+      max = left
     }
-    if(right<=n&&vector[right]<vector[min]){
-      min = right
+    if(right<=n&&vector[right]>=vector[max]){
+      max = right
     }
-    if(min!=k){
+    if(max!=k){
       temp = vector[k]
-      vector[k] = vector[min]
-      vector[min] = temp
-      vector = adjustHeap(vector,min,n)
+      vector[k] = vector[max]
+      vector[max] = temp
+      vector = adjustHeap(vector,max,n)
     }
   }
   return(vector)
 }
 
 createHeap = function(vector,n){
-  for(i in 1:floor(n/2)){
+  for(i in (n/2):1){
     vector = adjustHeap(vector,i,n)
   }
   return(vector)
@@ -151,31 +161,53 @@ heapSort = function(vector){
   n = length(vector)
   vector = createHeap(vector,n)
   for(i in 1:n){
-    temp = vector[n]
-    vector[n] = vector[i]
-    vector[i] = temp
-    vector = adjustHeap(vector,n,i)
+    temp = vector[n-i+1]
+    vector[n-i+1] = vector[1]
+    vector[1] = temp
+    vector = adjustHeap(vector,1,n-i)
   }
   return(vector)
 }
 ```
+用户  系统  流逝 
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+0.636 0.000 0.544 
+```{r}
+# merge sort
+combine = function(leftSet,rightSet){
+  m = 1
+  n = 1
+  vectorTemp = c()
+  while (m<=length(leftSet)&&n<=length(rightSet)) {
+    if(leftSet[m]<=rightSet[n]){
+      vectorTemp = append(vectorTemp,leftSet[m])
+      m = m+1
+    }else{
+      vectorTemp = append(vectorTemp,rightSet[n])
+      n = n+1
+    }
+  }
+  if(m>length(leftSet)&&n==length(rightSet)){
+    vectorTemp = append(vectorTemp,rightSet[n:length(rightSet)])
+  }else if(m==length(leftSet)&&n>length(rightSet)){
+    vectorTemp = append(vectorTemp,leftSet[m:length(leftSet)])
+  }
+  return(vectorTemp)
+}
+mergeSort = function(vector){
+  size = length(vector)
+  if(size==1){
+    return(vector)
+  }
+    cut = ceiling(size/2)
+    leftSet = mergeSort(vector[1:cut])
+    rightSet = mergeSort(vector[(cut+1):size])
+    vector = combine(leftSet,rightSet)
+    return(vector)
+}
 ```
+用户  系统  流逝 
 
-## Including Plots
+0.048 0.000 0.047
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
